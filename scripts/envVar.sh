@@ -5,9 +5,9 @@
 
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/certification-network.com/orderers/orderer.certification-network.com/msp/tlscacerts/tlsca.certification-network.com-cert.pem
-export PEER0_IIIT_CA=${PWD}/organizations/peerOrganizations/iiit.certification-network.com/peers/peer0.iiit.certification-network.com/tls/ca.crt
-export PEER0_MHRD_CA=${PWD}/organizations/peerOrganizations/mhrd.certification-network.com/peers/peer0.mhrd.certification-network.com/tls/ca.crt
-export PEER0_ACME_CA=${PWD}/organizations/peerOrganizations/acme.certification-network.com/peers/peer0.acme.certification-network.com/tls/ca.crt
+export PEER0_ORG1_CA=${PWD}/organizations/peerOrganizations/iiit.certification-network.com/peers/peer0.iiit.certification-network.com/tls/ca.crt
+export PEER0_ORG2_CA=${PWD}/organizations/peerOrganizations/mhrd.certification-network.com/peers/peer0.mhrd.certification-network.com/tls/ca.crt
+export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/acme.certification-network.com/peers/peer0.acme.certification-network.com/tls/ca.crt
 
 # Set environment variables for the peer org
 setGlobals() {
@@ -20,18 +20,18 @@ setGlobals() {
   infoln "Using organization ${USING_ORG}"
   if [ $USING_ORG -eq 1 ]; then
     export CORE_PEER_LOCALMSPID="iiitMSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_IIIT_CA
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/iiit.certification-network.com/users/Admin@iiit.certification-network.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
   elif [ $USING_ORG -eq 2 ]; then
     export CORE_PEER_LOCALMSPID="mhrdMSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_MHRD_CA
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/mhrd.certification-network.com/users/Admin@mhrd.certification-network.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
 
   elif [ $USING_ORG -eq 3 ]; then
     export CORE_PEER_LOCALMSPID="acmeMSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ACME_CA
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/acme.certification-network.com/users/Admin@acme.certification-network.com/msp
     export CORE_PEER_ADDRESS=localhost:11051
   else

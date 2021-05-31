@@ -30,3 +30,9 @@ peer channel create -o localhost:7050 -c mychannel --ordererTLSHostnameOverride 
 # Fetching the most recent configuration block for the channel
 
 peer channel fetch config config_block.pb -o orderer.certification-network.com:7050 --ordererTLSHostnameOverride orderer.certification-network.com -c certificationchannel --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/certification-network.com/orderers/orderer.certification-network.com/msp/tlscacerts/tlsca.certification-network.com-cert.pem
+
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.certification-network.com --tls --cafile /home/saif/codeStuff/cert-net/organizations/ordererOrganizations/certification-network.com/orderers/orderer.certification-network.com/msp/tlscacerts/tlsca.certification-network.com-cert.pem --channelID certificationchannel --name basic 
+--peerAddresses localhost:7051 --tlsRootCertFiles /home/saif/codeStuff/cert-net/organizations/peerOrganizations/iiit.certification-network.com/peers/peer0.iiit.certification-network.com/tls/ca.crt -
+-peerAddresses localhost:9051 --tlsRootCertFiles /home/saif/codeStuff/cert-net/organizations/peerOrganizations/mhrd.certification-network.com/peers/peer0.mhrd.certification-network.com/tls/ca.crt 
+--peerAddresses localhost:11051 --tlsRootCertFiles /home/saif/codeStuff/cert-net/organizations/peerOrganizations/acme.certification-network.com/peers/peer0.acme.certification-network.com/tls/ca.crt -
+-version 1.0 --sequence 1

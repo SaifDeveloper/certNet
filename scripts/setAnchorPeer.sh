@@ -37,7 +37,7 @@ createAnchorPeerUpdate() {
 }
 
 updateAnchorPeer() {
-  infoln "Anchor peer update for org: ${ORG}"
+  successln "Anchor peer update for org: $CORE_PEER_LOCALMSPID"
   set -x
   peer channel update -o orderer.certification-network.com:7050 --ordererTLSHostnameOverride orderer.certification-network.com -c $CHANNEL_NAME -f ${CORE_PEER_LOCALMSPID}anchors.tx --tls --cafile $ORDERER_CA >&log.txt
   res=$?
