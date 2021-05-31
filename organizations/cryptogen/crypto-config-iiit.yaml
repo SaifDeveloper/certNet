@@ -1,0 +1,10 @@
+PeerOrgs:
+  - Name: iiit
+    Domain: iiit.certification-network.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+      SANS:
+        - localhost
+    Users:
+      Count: 1

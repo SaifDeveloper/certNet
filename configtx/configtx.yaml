@@ -1,0 +1,199 @@
+Organizations:
+  - &OrdererOrg
+    Name: OrdererOrg
+
+    ID: OrdererMSP
+
+    MSPDir: ../organizations/ordererOrganizations/certification-network.com/msp
+
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+
+    OrdererEndpoints:
+      - orderer.certification-network.com:7050
+
+  - &IIIT
+    Name: iiitMSP
+
+    ID: iiitMSP
+
+    MSPDir: ../organizations/peerOrganizations/iiit.certification-network.com/msp
+
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('iiitMSP.admin', 'iiitMSP.peer', 'iiitMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('iiitMSP.admin', 'iiitMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('iiitMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('iiitMSP.peer')"
+
+  - &MHRD
+    Name: mhrdMSP
+
+    ID: mhrdMSP
+
+    MSPDir: ../organizations/peerOrganizations/mhrd.certification-network.com/msp
+
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('mhrdMSP.admin', 'mhrdMSP.peer', 'mhrdMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('mhrdMSP.admin', 'mhrdMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('mhrdMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('mhrdMSP.peer')"
+
+  - &Acme
+    Name: acmeMSP
+
+    ID: acmeMSP
+
+    MSPDir: ../organizations/peerOrganizations/acme.certification-network.com/msp
+
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('acmeMSP.admin', 'acmeMSP.peer', 'acmeMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('acmeMSP.admin', 'acmeMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('acmeMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('acmeMSP.peer')"
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+
+  Orderer: &OrdererCapabilities
+    V2_0: true
+
+  Application: &ApplicationCapabilities
+    V2_0: true
+
+Application: &ApplicationDefaults
+  Organizations:
+
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+
+  Addresses:
+    - orderer.certification-network.com:7050
+
+  EtcdRaft:
+    Consenters:
+      - Host: orderer.certification-network.com
+        Port: 7050
+        ClientTLSCert: ../organizations/ordererOrganizations/certification-network.com/orderers/orderer.certification-network.com/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/certification-network.com/orderers/orderer.certification-network.com/tls/server.crt
+
+  BatchTimeout: 2s
+
+  BatchSize:
+    MaxMessageCount: 10
+
+    AbsoluteMaxBytes: 99 MB
+
+    PreferredMaxBytes: 512 KB
+
+  Organizations:
+
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  TwoOrgsOrdererGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *OrdererOrg
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      CertificationConsortium:
+        Organizations:
+          - *IIIT
+          - *MHRD
+          - *Acme
+  CertificationChannel:
+    Consortium: CertificationConsortium
+    <<: *ChannelDefaults
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *IIIT
+        - *MHRD
+        - *Acme
+      Capabilities:
+        <<: *ApplicationCapabilities
